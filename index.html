@@ -179,13 +179,37 @@ tr:hover td { background: var(--paper); }
     <div class="section-sub">Record a public servant who has resigned to contest the 2027 National General Election.</div>
     <div id="form-error" style="color:var(--red); font-size:13px; margin-bottom:10px;"></div>
     <div class="form-grid">
+      <div class="field span-2"><label>Subject</label><input id="f-subject" placeholder="e.g. Resignation to contest 2027 National General Election"></div>
       <div class="field"><label>Full Name *</label><input id="f-name"></div>
+      <div class="field">
+        <label>Category</label>
+        <select id="f-category">
+          <option>Public Servant</option>
+          <option>Agency Head</option>
+        </select>
+      </div>
       <div class="field"><label>Employee / File Number</label><input id="f-file"></div>
       <div class="field"><label>Position / Designation</label><input id="f-position"></div>
       <div class="field"><label>Department / Agency</label><input id="f-department"></div>
+      <div class="field">
+        <label>Specific Category of Organisation</label>
+        <select id="f-org-category">
+          <option value="">— Select —</option>
+          <option>National Department</option>
+          <option>Provincial Administration</option>
+          <option>Statutory Authority</option>
+          <option>State-Owned Enterprise</option>
+          <option>Local-Level Government</option>
+          <option>Other</option>
+        </select>
+      </div>
       <div class="field"><label>Province of Employment</label><input id="f-emp-province"></div>
+      <div class="field"><label>Contact Phone</label><input id="f-phone" placeholder="+675 ..."></div>
+      <div class="field"><label>Contact Email</label><input type="email" id="f-email"></div>
       <div class="field"><label>Date of Resignation</label><input type="date" id="f-resign-date"></div>
       <div class="field"><label>Effective Date</label><input type="date" id="f-effective-date"></div>
+      <div class="field"><label>Date Received in DPM Sec's Office</label><input type="date" id="f-date-received"></div>
+      <div class="field"><label>Date of DPM Acknowledgment</label><input type="date" id="f-date-ack"></div>
       <div class="field"><label>Electorate Contesting</label><input id="f-electorate"></div>
       <div class="field"><label>Province of Electorate</label><input id="f-electorate-province"></div>
       <div class="field"><label>Party / Independent</label><input id="f-party"></div>
@@ -214,8 +238,10 @@ tr:hover td { background: var(--paper); }
       <table>
         <thead>
           <tr>
-            <th>Name</th><th>Department</th><th>Resigned</th><th>Contesting</th>
-            <th>Electorate Province</th><th>Status</th><th>Recorded By</th>
+            <th>Name</th><th>Category</th><th>Department</th><th>Org. Category</th>
+            <th>Resigned</th><th>Contesting</th><th>Electorate Province</th>
+            <th>Contact</th><th>Received (DPM)</th><th>Acknowledged</th>
+            <th>Status</th><th>Recorded By</th><th></th>
           </tr>
         </thead>
         <tbody id="table-body"></tbody>
@@ -279,13 +305,20 @@ async function submitRecord() {
   if (!name) { errEl.textContent = 'Full Name is required.'; return; }
 
   const record = {
+    subject: document.getElementById('f-subject').value.trim(),
     full_name: name,
+    resignee_category: document.getElementById('f-category').value,
     employee_file_number: document.getElementById('f-file').value.trim(),
     position_title: document.getElementById('f-position').value.trim(),
     department: document.getElementById('f-department').value.trim(),
+    organisation_category: document.getElementById('f-org-category').value,
     employment_province: document.getElementById('f-emp-province').value.trim(),
+    contact_phone: document.getElementById('f-phone').value.trim(),
+    contact_email: document.getElementById('f-email').value.trim(),
     resignation_date: document.getElementById('f-resign-date').value || null,
     effective_date: document.getElementById('f-effective-date').value || null,
+    date_received_dpm: document.getElementById('f-date-received').value || null,
+    date_dpm_acknowledgment: document.getElementById('f-date-ack').value || null,
     electorate_contesting: document.getElementById('f-electorate').value.trim(),
     electorate_province: document.getElementById('f-electorate-province').value.trim(),
     party_affiliation: document.getElementById('f-party').value.trim(),
@@ -297,11 +330,22 @@ async function submitRecord() {
   const { error } = await supabaseClient.from('resignations').insert(record);
   if (error) { errEl.textContent = error.message; return; }
 
-  ['f-name','f-file','f-position','f-department','f-emp-province','f-resign-date',
-   'f-effective-date','f-electorate','f-electorate-province','f-party','f-recorded-by','f-remarks']
+  ['f-subject','f-name','f-file','f-position','f-department','f-emp-province','f-phone','f-email',
+   'f-resign-date','f-effective-date','f-date-received','f-date-ack',
+   'f-electorate','f-electorate-province','f-party','f-recorded-by','f-remarks']
    .forEach(id => document.getElementById(id).value = '');
   document.getElementById('f-status').value = 'Pending Verification';
+  document.getElementById('f-category').value = 'Public Servant';
+  document.getElementById('f-org-category').value = '';
 
+  await loadRecords();
+}
+
+async function deleteRecord(id) {
+  const ok = confirm('Delete this record permanently? This cannot be undone.');
+  if (!ok) return;
+  const { error } = await supabaseClient.from('resignations').delete().eq('id', id);
+  if (error) { alert('Could not delete record: ' + error.message); return; }
   await loadRecords();
 }
 
@@ -316,7 +360,9 @@ function renderTable() {
     !q ||
     (r.full_name||'').toLowerCase().includes(q) ||
     (r.department||'').toLowerCase().includes(q) ||
-    (r.electorate_contesting||'').toLowerCase().includes(q)
+    (r.electorate_contesting||'').toLowerCase().includes(q) ||
+    (r.resignee_category||'').toLowerCase().includes(q) ||
+    (r.organisation_category||'').toLowerCase().includes(q)
   );
 
   document.getElementById('record-count').textContent = `${rows.length} of ${allRecords.length} record(s)`;
@@ -333,12 +379,18 @@ function renderTable() {
   body.innerHTML = rows.map(r => `
     <tr>
       <td>${r.full_name || ''}</td>
+      <td>${r.resignee_category || ''}</td>
       <td>${r.department || ''}</td>
+      <td>${r.organisation_category || ''}</td>
       <td>${r.resignation_date || ''}</td>
       <td>${r.electorate_contesting || ''}</td>
       <td>${r.electorate_province || ''}</td>
+      <td>${r.contact_phone || ''}${r.contact_phone && r.contact_email ? ' / ' : ''}${r.contact_email || ''}</td>
+      <td>${r.date_received_dpm || ''}</td>
+      <td>${r.date_dpm_acknowledgment || ''}</td>
       <td>${statusBadge(r.status || 'Pending Verification')}</td>
       <td>${r.recorded_by || ''}</td>
+      <td><button class="btn-link" onclick="deleteRecord('${r.id}')">Delete</button></td>
     </tr>
   `).join('');
 }
