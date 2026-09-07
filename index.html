@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DPM Resignation Register — 2027 National General Election</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+/* ============================================================
+   CONFIGURE THESE TWO VALUES — from Supabase > Settings > API
+   ============================================================ */
+</style>
+<script>
+  const SUPABASE_URL = "sb_publishable_Uol1SjSBZs2hdknIkNJm9g_0u-Z_qgU";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh4amNudWtld2VtZHRzZGlnZWhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2ODMzMzEsImV4cCI6MjEwNDI1OTMzMX0.JKtuDuLcs0t1CxK8ChqDQc44l323ZaLIQNatV4rZHx8";
+</script>
+
+<style>
+:root {
+  --paper:    #F7F5F0;
+  --surface:  #FFFFFF;
+  --ink:      #201E1B;
+  --ink-soft: #5B564D;
+  --line:     #E4DFD3;
+  --red:      #C8102E;
+  --red-dim:  rgba(200,16,46,0.08);
+  --gold:     #B8902E;
+  --gold-dim: rgba(184,144,46,0.10);
+  --green:    #2E7D4F;
+  --green-dim:rgba(46,125,79,0.10);
+  --amber:    #A8720C;
+  --amber-dim:rgba(168,114,12,0.10);
+  --font-head: 'Source Serif 4', serif;
+  --font-body: 'Inter', sans-serif;
+  --radius: 8px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: var(--font-body);
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100vh;
+}
+.hidden { display: none !important; }
+
+/* ---------- Top bar ---------- */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 32px;
+  background: var(--surface);
+  border-bottom: 2px solid var(--red);
+}
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand-mark {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: var(--red-dim); border: 1.5px solid var(--red);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; color: var(--red); font-weight: 700;
+}
+.brand-text .eyebrow { font-size: 11px; color: var(--ink-soft); }
+.brand-text .title { font-family: var(--font-head); font-size: 17px; font-weight: 600; }
+.who { display: flex; align-items: center; gap: 14px; font-size: 13px; color: var(--ink-soft); }
+.btn-link {
+  background: none; border: none; color: var(--red); font-family: var(--font-body);
+  font-size: 13px; font-weight: 600; cursor: pointer;
+}
+
+/* ---------- Login ---------- */
+#login-screen {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+}
+.login-card {
+  width: 400px; max-width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--red);
+  border-radius: var(--radius);
+  padding: 36px 32px;
+}
+.login-card h1 {
+  font-family: var(--font-head); font-size: 20px; font-weight: 600; margin-bottom: 6px;
+}
+.login-card p.sub { font-size: 13px; color: var(--ink-soft); margin-bottom: 26px; line-height: 1.5; }
+.field { margin-bottom: 16px; }
+.field label { display: block; font-size: 12px; font-weight: 600; color: var(--ink-soft); margin-bottom: 6px; }
+.field input, .field select, .field textarea {
+  width: 100%; padding: 10px 12px;
+  border: 1px solid var(--line); border-radius: 6px;
+  font-family: var(--font-body); font-size: 14px; background: var(--paper);
+  color: var(--ink);
+}
+.field input:focus, .field select:focus, .field textarea:focus {
+  outline: none; border-color: var(--red); background: var(--surface);
+}
+.btn-primary {
+  width: 100%; padding: 12px; margin-top: 6px;
+  background: var(--red); color: white; border: none; border-radius: 6px;
+  font-family: var(--font-body); font-weight: 600; font-size: 14px; cursor: pointer;
+}
+.btn-primary:hover { background: #A70D26; }
+.login-note { margin-top: 16px; font-size: 12px; color: var(--ink-soft); line-height: 1.5; }
+#login-error { color: var(--red); font-size: 13px; margin-bottom: 12px; }
+
+/* ---------- Main app ---------- */
+#app { padding: 28px 32px; max-width: 1100px; margin: 0 auto; }
+.section-title { font-family: var(--font-head); font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+.section-sub { font-size: 13px; color: var(--ink-soft); margin-bottom: 18px; }
+
+.panel {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 24px; margin-bottom: 28px;
+}
+.form-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 14px 18px;
+}
+.form-grid .span-2 { grid-column: 1 / -1; }
+@media (max-width: 640px) { .form-grid { grid-template-columns: 1fr; } }
+
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th { color: var(--ink-soft); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.03em; }
+tr:hover td { background: var(--paper); }
+
+.badge { padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+.badge.pending { background: var(--amber-dim); color: var(--amber); }
+.badge.verified { background: var(--gold-dim); color: var(--gold); }
+.badge.confirmed { background: var(--green-dim); color: var(--green); }
+
+.toolbar { display: flex; gap: 10px; margin-bottom: 14px; align-items: center; }
+.toolbar input { flex: 1; max-width: 320px; }
+.count-tag { font-size: 12px; color: var(--ink-soft); }
+.empty-state { padding: 30px; text-align: center; color: var(--ink-soft); font-size: 13px; }
+</style>
+</head>
+<body>
+
+<!-- ============== LOGIN SCREEN ============== -->
+<div id="login-screen">
+  <div class="login-card">
+    <h1>DPM Resignation Register</h1>
+    <p class="sub">Internal system — Public servants resigning to contest the 2027 National General Election. Access is limited to authorized DPM officers.</p>
+    <div id="login-error"></div>
+    <div class="field">
+      <label>Officer Email</label>
+      <input type="email" id="login-email" placeholder="you@dpm.gov.pg">
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="login-password" placeholder="••••••••">
+    </div>
+    <button class="btn-primary" onclick="login()">Log In</button>
+    <p class="login-note">Accounts are created manually by the system administrator. Contact your DPM IT/L&amp;AR focal point if you need access.</p>
+  </div>
+</div>
+
+<!-- ============== MAIN APP (shown after login) ============== -->
+<div id="app" class="hidden">
+  <div class="topbar" style="margin:-28px -32px 28px -32px;">
+    <div class="brand">
+      <div class="brand-mark">PG</div>
+      <div class="brand-text">
+        <div class="eyebrow">Department of Personnel Management</div>
+        <div class="title">Resignation Register — 2027 NGE</div>
+      </div>
+    </div>
+    <div class="who">
+      <span id="who-email"></span>
+      <button class="btn-link" onclick="logout()">Log Out</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="section-title">Register a Resignation</div>
+    <div class="section-sub">Record a public servant who has resigned to contest the 2027 National General Election.</div>
+    <div id="form-error" style="color:var(--red); font-size:13px; margin-bottom:10px;"></div>
+    <div class="form-grid">
+      <div class="field"><label>Full Name *</label><input id="f-name"></div>
+      <div class="field"><label>Employee / File Number</label><input id="f-file"></div>
+      <div class="field"><label>Position / Designation</label><input id="f-position"></div>
+      <div class="field"><label>Department / Agency</label><input id="f-department"></div>
+      <div class="field"><label>Province of Employment</label><input id="f-emp-province"></div>
+      <div class="field"><label>Date of Resignation</label><input type="date" id="f-resign-date"></div>
+      <div class="field"><label>Effective Date</label><input type="date" id="f-effective-date"></div>
+      <div class="field"><label>Electorate Contesting</label><input id="f-electorate"></div>
+      <div class="field"><label>Province of Electorate</label><input id="f-electorate-province"></div>
+      <div class="field"><label>Party / Independent</label><input id="f-party"></div>
+      <div class="field">
+        <label>Status</label>
+        <select id="f-status">
+          <option>Pending Verification</option>
+          <option>Verified</option>
+          <option>Confirmed Resigned</option>
+        </select>
+      </div>
+      <div class="field"><label>Recorded By (your name)</label><input id="f-recorded-by"></div>
+      <div class="field span-2"><label>Remarks</label><textarea id="f-remarks" rows="2"></textarea></div>
+    </div>
+    <button class="btn-primary" style="width:auto; padding:11px 22px; margin-top:6px;" onclick="submitRecord()">Save Record</button>
+  </div>
+
+  <div class="panel">
+    <div class="section-title">Register Records</div>
+    <div class="section-sub">All resignations recorded to date.</div>
+    <div class="toolbar">
+      <input id="search-box" placeholder="Search by name, department, or electorate..." oninput="renderTable()">
+      <span class="count-tag" id="record-count"></span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th><th>Department</th><th>Resigned</th><th>Contesting</th>
+            <th>Electorate Province</th><th>Status</th><th>Recorded By</th>
+          </tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+      </table>
+      <div id="empty-state" class="empty-state hidden">No records yet.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+let allRecords = [];
+
+// ---------- Auth ----------
+async function login() {
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  const errEl = document.getElementById('login-error');
+  errEl.textContent = '';
+  if (!email || !password) { errEl.textContent = 'Enter both email and password.'; return; }
+
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) { errEl.textContent = error.message; return; }
+  showApp(data.user);
+}
+
+async function logout() {
+  await supabase.auth.signOut();
+  document.getElementById('app').classList.add('hidden');
+  document.getElementById('login-screen').classList.remove('hidden');
+}
+
+async function showApp(user) {
+  document.getElementById('login-screen').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  document.getElementById('who-email').textContent = user.email;
+  await loadRecords();
+}
+
+// Restore session on page reload
+(async () => {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session) showApp(session.user);
+})();
+
+// ---------- Data ----------
+async function loadRecords() {
+  const { data, error } = await supabase
+    .from('resignations')
+    .select('*')
+    .order('created_at', { ascending: false });
+  if (error) { alert('Could not load records: ' + error.message); return; }
+  allRecords = data || [];
+  renderTable();
+}
+
+async function submitRecord() {
+  const errEl = document.getElementById('form-error');
+  errEl.textContent = '';
+  const name = document.getElementById('f-name').value.trim();
+  if (!name) { errEl.textContent = 'Full Name is required.'; return; }
+
+  const record = {
+    full_name: name,
+    employee_file_number: document.getElementById('f-file').value.trim(),
+    position_title: document.getElementById('f-position').value.trim(),
+    department: document.getElementById('f-department').value.trim(),
+    employment_province: document.getElementById('f-emp-province').value.trim(),
+    resignation_date: document.getElementById('f-resign-date').value || null,
+    effective_date: document.getElementById('f-effective-date').value || null,
+    electorate_contesting: document.getElementById('f-electorate').value.trim(),
+    electorate_province: document.getElementById('f-electorate-province').value.trim(),
+    party_affiliation: document.getElementById('f-party').value.trim(),
+    status: document.getElementById('f-status').value,
+    recorded_by: document.getElementById('f-recorded-by').value.trim(),
+    remarks: document.getElementById('f-remarks').value.trim(),
+  };
+
+  const { error } = await supabase.from('resignations').insert(record);
+  if (error) { errEl.textContent = error.message; return; }
+
+  ['f-name','f-file','f-position','f-department','f-emp-province','f-resign-date',
+   'f-effective-date','f-electorate','f-electorate-province','f-party','f-recorded-by','f-remarks']
+   .forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f-status').value = 'Pending Verification';
+
+  await loadRecords();
+}
+
+function statusBadge(status) {
+  const cls = status === 'Confirmed Resigned' ? 'confirmed' : status === 'Verified' ? 'verified' : 'pending';
+  return `<span class="badge ${cls}">${status}</span>`;
+}
+
+function renderTable() {
+  const q = document.getElementById('search-box').value.toLowerCase();
+  const rows = allRecords.filter(r =>
+    !q ||
+    (r.full_name||'').toLowerCase().includes(q) ||
+    (r.department||'').toLowerCase().includes(q) ||
+    (r.electorate_contesting||'').toLowerCase().includes(q)
+  );
+
+  document.getElementById('record-count').textContent = `${rows.length} of ${allRecords.length} record(s)`;
+  const body = document.getElementById('table-body');
+  const empty = document.getElementById('empty-state');
+
+  if (rows.length === 0) {
+    body.innerHTML = '';
+    empty.classList.remove('hidden');
+    return;
+  }
+  empty.classList.add('hidden');
+
+  body.innerHTML = rows.map(r => `
+    <tr>
+      <td>${r.full_name || ''}</td>
+      <td>${r.department || ''}</td>
+      <td>${r.resignation_date || ''}</td>
+      <td>${r.electorate_contesting || ''}</td>
+      <td>${r.electorate_province || ''}</td>
+      <td>${statusBadge(r.status || 'Pending Verification')}</td>
+      <td>${r.recorded_by || ''}</td>
+    </tr>
+  `).join('');
+}
+</script>
+</body>
+</html>
