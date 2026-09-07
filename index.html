@@ -15,7 +15,7 @@
 </style>
 <script>
   const SUPABASE_URL = "sb_publishable_Uol1SjSBZs2hdknIkNJm9g_0u-Z_qgU";
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh4amNudWtld2VtZHRzZGlnZWhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2ODMzMzEsImV4cCI6MjEwNDI1OTMzMX0.JKtuDuLcs0t1CxK8ChqDQc44l323ZaLIQNatV4rZHx8";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh4amNudWtld2VtZHRzZGlnZWhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2ODMzMzEsImV4cCI6MjEwNDI1OTMzMX0.JKtuDuLcs0t1CxK8ChqDQc44l323ZaLIQNatV4rZHx8 ";
 </script>
 
 <style>
@@ -226,7 +226,7 @@ tr:hover td { background: var(--paper); }
 </div>
 
 <script>
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabaseClient = window.supabase.createClient(sb_publishable_Uol1SjSBZs2hdknIkNJm9g_0u-Z_qgU, eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh4amNudWtld2VtZHRzZGlnZWhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2ODMzMzEsImV4cCI6MjEwNDI1OTMzMX0.JKtuDuLcs0t1CxK8ChqDQc44l323ZaLIQNatV4rZHx8);
 let allRecords = [];
 
 // ---------- Auth ----------
@@ -237,13 +237,13 @@ async function login() {
   errEl.textContent = '';
   if (!email || !password) { errEl.textContent = 'Enter both email and password.'; return; }
 
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
   if (error) { errEl.textContent = error.message; return; }
   showApp(data.user);
 }
 
 async function logout() {
-  await supabase.auth.signOut();
+  await supabaseClient.auth.signOut();
   document.getElementById('app').classList.add('hidden');
   document.getElementById('login-screen').classList.remove('hidden');
 }
@@ -257,13 +257,13 @@ async function showApp(user) {
 
 // Restore session on page reload
 (async () => {
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { session } } = await supabaseClient.auth.getSession();
   if (session) showApp(session.user);
 })();
 
 // ---------- Data ----------
 async function loadRecords() {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseClient
     .from('resignations')
     .select('*')
     .order('created_at', { ascending: false });
@@ -294,7 +294,7 @@ async function submitRecord() {
     remarks: document.getElementById('f-remarks').value.trim(),
   };
 
-  const { error } = await supabase.from('resignations').insert(record);
+  const { error } = await supabaseClient.from('resignations').insert(record);
   if (error) { errEl.textContent = error.message; return; }
 
   ['f-name','f-file','f-position','f-department','f-emp-province','f-resign-date',
